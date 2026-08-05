@@ -1,0 +1,69 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
+@TeleOp(name = "Mover Robo 4 Motores")
+public class MoverRobo4Motores extends LinearOpMode {
+
+    // Declaração dos motores
+    DcMotor motorEsquerdoFrente;
+    DcMotor motorEsquerdoTras;
+    DcMotor motorDireitoFrente;
+    DcMotor motorDireitoTras;
+
+    @Override
+    public void runOpMode() {
+
+        // Liga as variáveis aos motores configurados no Control Hub
+        motorEsquerdoFrente = hardwareMap.get(DcMotor.class, "MEF");
+        motorEsquerdoTras = hardwareMap.get(DcMotor.class, "MET");
+        motorDireitoFrente = hardwareMap.get(DcMotor.class, "MDF");
+        motorDireitoTras = hardwareMap.get(DcMotor.class, "MDT");
+
+        // Inverte os motores do lado direito
+        motorDireitoFrente.setDirection(DcMotor.Direction.REVERSE);
+        motorDireitoTras.setDirection(DcMotor.Direction.REVERSE);
+
+        // Espera o início da partida
+        waitForStart();
+
+        // Enquanto a partida estiver ativa
+        while (opModeIsActive()) {
+
+            // Anda para frente
+            motorEsquerdoFrente.setPower(1);
+            motorEsquerdoTras.setPower(1);
+            motorDireitoFrente.setPower(1);
+            motorDireitoTras.setPower(1);
+
+            sleep(2000);
+
+            // Para o robô
+            motorEsquerdoFrente.setPower(0);
+            motorEsquerdoTras.setPower(0);
+            motorDireitoFrente.setPower(0);
+            motorDireitoTras.setPower(0);
+
+            sleep(1000);
+
+            // Anda para trás
+            motorEsquerdoFrente.setPower(-1);
+            motorEsquerdoTras.setPower(-1);
+            motorDireitoFrente.setPower(-1);
+            motorDireitoTras.setPower(-1);
+
+            sleep(2000);
+
+            // Para novamente
+            motorEsquerdoFrente.setPower(0);
+            motorEsquerdoTras.setPower(0);
+            motorDireitoFrente.setPower(0);
+            motorDireitoTras.setPower(0);
+
+            // Encerra o programa
+            break;
+        }
+    }
+}
