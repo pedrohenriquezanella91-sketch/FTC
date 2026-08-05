@@ -1,0 +1,38 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
+@TeleOp(name = "TesteMotores", group = "Testes")
+public class TesteMotores extends LinearOpMode {
+
+    private DcMotor motorEsquerdo;
+    private DcMotor motorDireito;
+
+    @Override
+    public void runOpMode() {
+
+        // Nomes iguais aos configurados no Robot Controller
+        motorEsquerdo = hardwareMap.get(DcMotor.class, "leftMotor");
+        motorDireito = hardwareMap.get(DcMotor.class, "rightMotor");
+
+        // Inverte um dos motores caso necessário
+        motorDireito.setDirection(DcMotor.Direction.REVERSE);
+
+        waitForStart();
+
+        while (opModeIsActive()) {
+
+            // Analógico esquerdo (frente/trás)
+            double velocidade = -gamepad1.left_stick_y;
+
+            // Ambos os motores recebem a mesma velocidade
+            motorEsquerdo.setPower(velocidade);
+            motorDireito.setPower(velocidade);
+
+            telemetry.addData("Velocidade", velocidade);
+            telemetry.update();
+        }
+    }
+}
