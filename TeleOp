@@ -4,10 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@TeleOp(name = "Mecanum")
-public class MecanumBasico extends LinearOpMode {
+@TeleOp(name = "Mecanum Completo")
+public class MecanumCompleto extends LinearOpMode {
 
-    
     DcMotor motorEsquerdoFrente;
     DcMotor motorEsquerdoTras;
     DcMotor motorDireitoFrente;
@@ -16,7 +15,6 @@ public class MecanumBasico extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        
         motorEsquerdoFrente =
                 hardwareMap.get(DcMotor.class, "MEF");
 
@@ -29,38 +27,78 @@ public class MecanumBasico extends LinearOpMode {
         motorDireitoTras =
                 hardwareMap.get(DcMotor.class, "MDT");
 
-        
         motorDireitoFrente.setDirection(DcMotor.Direction.REVERSE);
         motorDireitoTras.setDirection(DcMotor.Direction.REVERSE);
+
+        motorEsquerdoFrente.setZeroPowerBehavior(
+                DcMotor.ZeroPowerBehavior.BRAKE);
+
+        motorEsquerdoTras.setZeroPowerBehavior(
+                DcMotor.ZeroPowerBehavior.BRAKE);
+
+        motorDireitoFrente.setZeroPowerBehavior(
+                DcMotor.ZeroPowerBehavior.BRAKE);
+
+        motorDireitoTras.setZeroPowerBehavior(
+                DcMotor.ZeroPowerBehavior.BRAKE);
+
+        telemetry.addLine("Mecanum pronto!");
+        telemetry.addLine("Pressione START.");
+        telemetry.update();
 
         waitForStart();
 
         while (opModeIsActive()) {
 
-            
             double frente = -gamepad1.left_stick_y;
             double lateral = gamepad1.left_stick_x;
             double giro = gamepad1.right_stick_x;
 
-            
-            double potenciaEsquerdaFrente =
+            double motorMEF =
                     frente + lateral + giro;
 
-            double potenciaEsquerdaTras =
+            double motorMET =
                     frente - lateral + giro;
 
-            double potenciaDireitaFrente =
+            double motorMDF =
                     frente - lateral - giro;
 
-            double potenciaDireitaTras =
+            double motorMDT =
                     frente + lateral - giro;
 
-            
-            motorEsquerdoFrente.setPower(potenciaEsquerdaFrente);
-            motorEsquerdoTras.setPower(potenciaEsquerdaTras);
+            double maiorPotencia = Math.max(
+                    Math.max(Math.abs(motorMEF), Math.abs(motorMET)),
+                    Math.max(Math.abs(motorMDF), Math.abs(motorMDT))
+            );
 
-            motorDireitoFrente.setPower(potenciaDireitaFrente);
-            motorDireitoTras.setPower(potenciaDireitaTras);
+            if (maiorPotencia > 1.0) {
+                motorMEF /= maiorPotencia;
+                motorMET /= maiorPotencia;
+                motorMDF /= maiorPotencia;
+                motorMDT /= maiorPotencia;
+            }
+
+            motorEsquerdoFrente.setPower(motorMEF);
+            motorEsquerdoTras.setPower(motorMET);
+
+            motorDireitoFrente.setPower(motorMDF);
+            motorDireitoTras.setPower(motorMDT);
+
+            telemetry.addData("Frente", "%.2f", frente);
+            telemetry.addData("Lateral", "%.2f", lateral);
+            telemetry.addData("Giro", "%.2f", giro);
+
+            telemetry.addData("MEF", "%.2f", motorMEF);
+            telemetry.addData("MET", "%.2f", motorMET);
+            telemetry.addData("MDF", "%.2f", motorMDF);
+            telemetry.addData("MDT", "%.2f", motorMDT);
+
+            telemetry.update();
         }
+
+        motorEsquerdoFrente.setPower(0);
+        motorEsquerdoTras.setPower(0);
+        motorDireitoFrente.setPower(0);
+        motorDireitoTras.setPower(0);
     }
 }
