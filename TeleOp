@@ -1,0 +1,66 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
+@TeleOp(name = "Mecanum Basico")
+public class MecanumBasico extends LinearOpMode {
+
+    
+    DcMotor motorEsquerdoFrente;
+    DcMotor motorEsquerdoTras;
+    DcMotor motorDireitoFrente;
+    DcMotor motorDireitoTras;
+
+    @Override
+    public void runOpMode() {
+
+        
+        motorEsquerdoFrente =
+                hardwareMap.get(DcMotor.class, "MEF");
+
+        motorEsquerdoTras =
+                hardwareMap.get(DcMotor.class, "MET");
+
+        motorDireitoFrente =
+                hardwareMap.get(DcMotor.class, "MDF");
+
+        motorDireitoTras =
+                hardwareMap.get(DcMotor.class, "MDT");
+
+        
+        motorDireitoFrente.setDirection(DcMotor.Direction.REVERSE);
+        motorDireitoTras.setDirection(DcMotor.Direction.REVERSE);
+
+        waitForStart();
+
+        while (opModeIsActive()) {
+
+            
+            double frente = -gamepad1.left_stick_y;
+            double lateral = gamepad1.left_stick_x;
+            double giro = gamepad1.right_stick_x;
+
+            
+            double potenciaEsquerdaFrente =
+                    frente + lateral + giro;
+
+            double potenciaEsquerdaTras =
+                    frente - lateral + giro;
+
+            double potenciaDireitaFrente =
+                    frente - lateral - giro;
+
+            double potenciaDireitaTras =
+                    frente + lateral - giro;
+
+            
+            motorEsquerdoFrente.setPower(potenciaEsquerdaFrente);
+            motorEsquerdoTras.setPower(potenciaEsquerdaTras);
+
+            motorDireitoFrente.setPower(potenciaDireitaFrente);
+            motorDireitoTras.setPower(potenciaDireitaTras);
+        }
+    }
+}
